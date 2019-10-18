@@ -26,6 +26,12 @@ if (ASAN)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -g3 -fno-omit-frame-pointer")
 endif()
 
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+if (CODE_COVERAGE)
+  message(STATUS "Code coverage enabled")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+endif(CODE_COVERAGE)
+
 set(CMAKE_C_STANDARD 90)
 CHECK_FUNCTION_EXISTS(clock_gettime HAVE_CLOCK_GETTIME_C)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "" HAVE_CLOCK_GETTIME_RT)
