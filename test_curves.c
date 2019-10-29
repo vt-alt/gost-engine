@@ -232,6 +232,7 @@ int main(int argc, char **argv)
 
     struct test_curve *tc;
     for (tc = test_curves; tc->nid; tc++) {
+	// ret |= parameter_test(tc);
 	ret |= parameter_test(tc);
     }
 
