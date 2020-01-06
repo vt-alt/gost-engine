@@ -24,6 +24,11 @@ matrix:
     - env: LABEL="linux-ppc64le"
       os: linux-ppc64le
       compiler: gcc
+    - os: linux
+      arch: ppc64le
+      compiler: gcc
+    - os: linux
+      arch: s390x
 
 before_script:
   - curl -L https://cpanmin.us | sudo perl - --sudo App::cpanminus
