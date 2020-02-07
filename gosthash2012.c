@@ -113,7 +113,7 @@ static INLINE void add512(union uint512_u * RESTRICT x,
 static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
               const union uint512_u * RESTRICT m)
 {
-#ifdef __GOST3411_HAS_SSE2__
+#ifdef __GOST3411_HAS_SSE2__2
     __m128i xmm0, xmm2, xmm4, xmm6; /* XMMR0-quadruple */
     __m128i xmm1, xmm3, xmm5, xmm7; /* XMMR1-quadruple */
     unsigned int i;

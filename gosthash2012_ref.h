@@ -8,7 +8,7 @@
  *
  */
 
-#ifdef __GOST3411_HAS_SSE2__
+#ifdef __GOST3411_HAS_SSE2__2
 # error "GOST R 34.11-2012: portable implementation disabled in config.h"
 #endif
 

@@ -35,7 +35,7 @@
 # define __GOST3411_BIG_ENDIAN__
 #endif
 
-#if defined __GOST3411_HAS_SSE2__
+#if defined __GOST3411_HAS_SSE2__2
 # include "gosthash2012_sse2.h"
 #else
 # include "gosthash2012_ref.h"
