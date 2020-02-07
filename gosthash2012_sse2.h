@@ -23,12 +23,6 @@
 #define LO(v) ((unsigned char) (v))
 #define HI(v) ((unsigned char) (((unsigned int) (v)) >> 8))
 
-#ifdef __i386__
-# define EXTRACT EXTRACT32
-#else
-# define EXTRACT EXTRACT64
-#endif
-
 #ifndef __ICC
 # define _mm_cvtsi64_m64(v) (__m64) v
 # define _mm_cvtm64_si64(v) (long long) v
@@ -95,49 +89,7 @@
     xmm3 = _mm_xor_si128(xmm3, MEM_READ_I128(&__m128p[3])); \
 }
 
-#define _mm_xor_64(mm0, mm1) _mm_xor_si64(mm0, _mm_cvtsi64_m64(mm1))
-
-#define EXTRACT32(row, xmm0, xmm1, xmm2, xmm3, xmm4) { \
-    register unsigned short ax; \
-    __m64 mm0, mm1; \
-     \
-    ax = (unsigned short) _mm_extract_epi16(xmm0, row + 0); \
-    mm0  = _mm_cvtsi64_m64(Ax[0][LO(ax)]); \
-    mm1  = _mm_cvtsi64_m64(Ax[0][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm0, row + 4); \
-    mm0 = _mm_xor_64(mm0, Ax[1][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[1][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm1, row + 0); \
-    mm0 = _mm_xor_64(mm0, Ax[2][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[2][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm1, row + 4); \
-    mm0 = _mm_xor_64(mm0, Ax[3][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[3][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm2, row + 0); \
-    mm0 = _mm_xor_64(mm0, Ax[4][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[4][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm2, row + 4); \
-    mm0 = _mm_xor_64(mm0, Ax[5][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[5][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm3, row + 0); \
-    mm0 = _mm_xor_64(mm0, Ax[6][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[6][HI(ax)]); \
-    \
-    ax = (unsigned short) _mm_extract_epi16(xmm3, row + 4); \
-    mm0 = _mm_xor_64(mm0, Ax[7][LO(ax)]); \
-    mm1 = _mm_xor_64(mm1, Ax[7][HI(ax)]); \
-    \
-    xmm4 = _mm_set_epi64(mm1, mm0); \
-}
-
-#define EXTRACT64(row, xmm0, xmm1, xmm2, xmm3, xmm4) { \
-    __m128i tmm4; \
+#define EXTRACT(row, xmm0, xmm1, xmm2, xmm3, xmm4) { \
     register unsigned short ax; \
     register unsigned long long r0, r1; \
      \
@@ -173,9 +125,7 @@
     r0 ^= Ax[7][LO(ax)]; \
     r1 ^= Ax[7][HI(ax)]; \
     \
-    xmm4 = _mm_cvtsi64_si128((long long) r0); \
-    tmm4 = _mm_cvtsi64_si128((long long) r1); \
-    xmm4 = _mm_unpacklo_epi64(xmm4, tmm4); \
+    xmm4 = _mm_set_epi64x(r1, r0); \
 }
 
 #define XLPS128M(P, xmm0, xmm1, xmm2, xmm3) { \
