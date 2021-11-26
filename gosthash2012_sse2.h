@@ -8,11 +8,9 @@
  *
  */
 
-#ifndef __GOST3411_HAS_SSE2__
+#ifndef __SSE2__
 # error "GOST R 34.11-2012: SSE2 not enabled"
 #endif
-
-# pragma message "Use SIMD implementation"
 
 #include <mmintrin.h>
 #include <emmintrin.h>

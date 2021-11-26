@@ -124,6 +124,8 @@ set(GOST_HASH_SOURCE_FILES
 set(GOST_HASH_2012_SOURCE_FILES
         gosthash2012.c
         gosthash2012.h
+        gosthash2012_dispatch.h
+        gosthash2012_g.h
         gosthash2012_const.h
         gosthash2012_precalc.h
         gosthash2012_ref.h

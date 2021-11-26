@@ -10,6 +10,9 @@
 
 #include <string.h>
 
+/* Can be undef'd to disable ref impl. */
+#define __GOST3411_HAS_REF__
+
 #ifdef __SSE2__
 # define __GOST3411_HAS_SSE2__
 # if !defined(__x86_64__) && !defined(__e2k__)
@@ -33,12 +36,6 @@
 
 #ifndef L_ENDIAN
 # define __GOST3411_BIG_ENDIAN__
-#endif
-
-#if defined __GOST3411_HAS_SSE2__
-# include "gosthash2012_sse2.h"
-#else
-# include "gosthash2012_ref.h"
 #endif
 
 # if defined(__GNUC__) || defined(__clang__)
