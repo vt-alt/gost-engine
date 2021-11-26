@@ -44,6 +44,9 @@
 # undef STORE
 # undef X128R
 # undef X128M
+# undef EXTRACT
+# undef EXTRACT32
+# undef EXTRACT64
 # undef XLPS128M
 # undef XLPS128R
 # undef ROUND128
@@ -57,6 +60,37 @@
    */
 #  undef __GOST3411_HAS_REF__
 # endif
+#endif
+
+/* Construct SSE4.1 implementation. */
+#ifdef __GOST3411_HAS_SSE41__
+# define g g_sse41
+# define __GOST3411_USE_SSE41__
+# if defined(__clang__)
+#  pragma clang attribute push (__attribute__((target("sse4.1"))), apply_to = function)
+# elif defined(__GNUC__)
+#  pragma GCC push_options
+#  pragma GCC target("sse4.1")
+# endif
+# include "gosthash2012_sse41.h"
+# include "gosthash2012_g.h"
+# if defined(__clang__)
+#  pragma clang attribute pop
+# elif defined(__GNUC__)
+#  pragma GCC pop_options
+# endif
+# undef LOAD
+# undef UNLOAD
+# undef X128R
+# undef X128M
+# undef EXTRACT
+# undef EXTRACT32
+# undef EXTRACT64
+# undef XLPS128M
+# undef XLPS128R
+# undef ROUND128
+# undef __GOST3411_USE_SSE41__
+# undef g
 #endif
 
 #ifdef __GOST3411_HAS_REF__
@@ -74,13 +108,21 @@ static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
     const union uint512_u * RESTRICT m)
 {
 #if __has_builtin(__builtin_cpu_supports)
+# if defined __GOST3411_HAS_SSE41__
+    if (__builtin_cpu_supports("sse4.1"))
+	return g_sse41(h, N, m);
+# endif
 # if defined __GOST3411_HAS_SSE2__
     if (__builtin_cpu_supports("sse2"))
 	return g_sse2(h, N, m);
-# elif defined  __GOST3411_HAS_REF__
+# endif
+# if defined __GOST3411_HAS_REF__
     g_ref(h, N, m);
-# else
-#  error "No implementation of g() is selected."
+# endif
+# if !defined __GOST3411_HAS_SSE41__ && \
+    !defined __GOST3411_HAS_SSE2__ && \
+    !defined __GOST3411_HAS_REF__
+#  error "No dynamic implementation of g() is selected."
 # endif
 #else /* No dynamic dispatcher. */
 # if defined __GOST3411_HAS_SSE2__
@@ -88,7 +130,7 @@ static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
 # elif defined  __GOST3411_HAS_REF__
     g_ref(h, N, m);
 # else
-#  error "No implementation of g() is selected."
+#  error "No static implementation of g() is selected."
 # endif
 #endif
 }

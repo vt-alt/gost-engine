@@ -28,6 +28,10 @@
 # endif
 #endif
 
+#ifdef __x86_64__
+# define __GOST3411_HAS_SSE41__
+#endif
+
 #ifdef __GOST3411_HAS_SSE2__
 # if (__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 2)
 #  undef __GOST3411_HAS_SSE2__

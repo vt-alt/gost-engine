@@ -14,7 +14,7 @@
 static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
               const union uint512_u * RESTRICT m)
 {
-#if defined __GOST3411_USE_SSE2__
+#if defined __GOST3411_USE_SSE2__ || defined __GOST3411_USE_SSE41__
     __m128i xmm0, xmm2, xmm4, xmm6; /* XMMR0-quadruple */
     __m128i xmm1, xmm3, xmm5, xmm7; /* XMMR1-quadruple */
     unsigned int i;
