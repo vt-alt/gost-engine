@@ -15,12 +15,31 @@
 # endif
 #endif
 
+/* '__has_builtin is supported on gcc >= 10, clang >= 3 and icc >= 21.' */
+#ifndef __has_builtin
+# define __has_builtin(x) 0
+#endif
+
+/*
+ * Construct SSE2 implementation. SSE2 is baseline in x86_64, but a feature
+ * on IA-32, thus pass target() for IA-32.
+ */
 #ifdef __GOST3411_HAS_SSE2__
-/* Construct SSE2 implementation. */
 # define g g_sse2
 # define __GOST3411_USE_SSE2__
+# if defined(__clang__)
+#  pragma clang attribute push (__attribute__((target("sse2"))), apply_to = function)
+# elif defined(__GNUC__)
+#  pragma GCC push_options
+#  pragma GCC target("sse2")
+# endif
 # include "gosthash2012_sse2.h"
 # include "gosthash2012_g.h"
+# if defined(__clang__)
+#  pragma clang attribute pop
+# elif defined(__GNUC__)
+#  pragma GCC pop_options
+# endif
 # undef LOAD
 # undef STORE
 # undef X128R
@@ -54,11 +73,22 @@
 static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
     const union uint512_u * RESTRICT m)
 {
-#if defined __GOST3411_HAS_SSE2__
-    g_sse2(h, N, m);
-#elif defined  __GOST3411_HAS_REF__
+#if __has_builtin(__builtin_cpu_supports)
+# if defined __GOST3411_HAS_SSE2__
+    if (__builtin_cpu_supports("sse2"))
+	return g_sse2(h, N, m);
+# elif defined  __GOST3411_HAS_REF__
     g_ref(h, N, m);
-#else
-# error "No implementation of g() is selected."
+# else
+#  error "No implementation of g() is selected."
+# endif
+#else /* No dynamic dispatcher. */
+# if defined __GOST3411_HAS_SSE2__
+    g_sse2(h, N, m);
+# elif defined  __GOST3411_HAS_REF__
+    g_ref(h, N, m);
+# else
+#  error "No implementation of g() is selected."
+# endif
 #endif
 }

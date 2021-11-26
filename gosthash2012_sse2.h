@@ -8,10 +8,6 @@
  *
  */
 
-#ifndef __SSE2__
-# error "GOST R 34.11-2012: SSE2 not enabled"
-#endif
-
 #include <mmintrin.h>
 #include <emmintrin.h>
 #ifdef __SSE3__
