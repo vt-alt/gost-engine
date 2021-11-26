@@ -10,9 +10,6 @@
 
 #include <mmintrin.h>
 #include <emmintrin.h>
-#ifdef __SSE3__
-# include <pmmintrin.h>
-#endif
 
 #define LO(v) ((unsigned char) (v))
 #define HI(v) ((unsigned char) (((unsigned int) (v)) >> 8))
@@ -28,15 +25,7 @@
 # define _mm_cvtm64_si64(v) (long long) v
 #endif
 
-#ifdef __SSE3__
-/*
- * "This intrinsic may perform better than _mm_loadu_si128 when
- * the data crosses a cache line boundary."
- */
-# define UMEM_READ_I128 _mm_lddqu_si128
-#else /* SSE2 */
-# define UMEM_READ_I128 _mm_loadu_si128
-#endif
+#define UMEM_READ_I128 _mm_loadu_si128
 
 /* load 512bit from unaligned memory  */
 #define ULOAD(P, xmm0, xmm1, xmm2, xmm3) { \
