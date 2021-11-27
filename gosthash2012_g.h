@@ -41,7 +41,7 @@ static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
     /* This is only required on MMX, but EXTRACT32 is using MMX */
     _mm_empty();
 # endif
-#else
+#else /* ref and MMX impl. */
     union uint512_u Ki, data;
     unsigned int i;
 
@@ -60,5 +60,8 @@ static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
 
     X((&data), h, (&data));
     X((&data), m, h);
+# ifdef __GOST3411_USE_MMX__
+    _mm_empty();
+# endif
 #endif
 }

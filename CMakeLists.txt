@@ -129,6 +129,7 @@ set(GOST_HASH_2012_SOURCE_FILES
         gosthash2012_const.h
         gosthash2012_precalc.h
         gosthash2012_ref.h
+        gosthash2012_mmx.h
         gosthash2012_sse2.h
         gosthash2012_sse41.h
         )

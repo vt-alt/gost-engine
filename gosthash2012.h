@@ -13,6 +13,19 @@
 /* Can be undef'd to disable ref impl. */
 #define __GOST3411_HAS_REF__
 
+#ifdef __i386__
+/* Pure MMX is meaningful only for IA-32. */
+# ifdef __SSE__
+/*
+ * If user compiled with >= '-msse' compiler can introduce higher level
+ * microarchitecture optimizations into MMX code.
+ */
+#  warning "MMX implementation will be broken if SSE enabled. Disabling it."
+# else
+#  define __GOST3411_HAS_MMX__
+# endif
+#endif
+
 #ifdef __SSE2__
 # define __GOST3411_HAS_SSE2__
 # if !defined(__x86_64__) && !defined(__e2k__)

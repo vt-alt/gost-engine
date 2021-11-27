@@ -20,6 +20,33 @@
 # define __has_builtin(x) 0
 #endif
 
+/* Construct MMX implementation. */
+#ifdef __GOST3411_HAS_MMX__
+# define g g_mmx
+# define __GOST3411_USE_MMX__
+# if defined(__clang__)
+#  pragma clang attribute push (__attribute__((target("mmx"))), apply_to = function)
+# elif defined(__GNUC__)
+#  pragma GCC push_options
+#  pragma GCC target("mmx")
+# endif
+# include "gosthash2012_mmx.h"
+# include "gosthash2012_g.h"
+# if defined(__clang__)
+#  pragma clang attribute pop
+# elif defined(__GNUC__)
+#  pragma GCC pop_options
+# endif
+# undef XLOAD
+# undef STORE
+# undef TRANSPOSE
+# undef XTRANSPOSE
+# undef XLPS32
+# undef XLPS
+# undef __GOST3411_USE_MMX__
+# undef g
+#endif
+
 /*
  * Construct SSE2 implementation. SSE2 is baseline in x86_64, but a feature
  * on IA-32, thus pass target() for IA-32.
@@ -115,6 +142,10 @@ static void g(union uint512_u *h, const union uint512_u * RESTRICT N,
 # if defined __GOST3411_HAS_SSE2__
     if (__builtin_cpu_supports("sse2"))
 	return g_sse2(h, N, m);
+# endif
+# if defined __GOST3411_HAS_MMX__
+    if (__builtin_cpu_supports("mmx"))
+	return g_mmx(h, N, m);
 # endif
 # if defined __GOST3411_HAS_REF__
     g_ref(h, N, m);
