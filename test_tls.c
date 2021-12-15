@@ -12,6 +12,13 @@
 # pragma warning(push, 3)
 # include <openssl/applink.c>
 # pragma warning(pop)
+# include <Winsock2.h>
+#else
+# include <unistd.h>
+# include <sys/wait.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
 #endif
 #include "e_gost_err.h"
 #include "gost_lcl.h"
@@ -27,13 +34,8 @@
 #include <openssl/bn.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 #ifdef __GNUC__
 /* For X509_NAME_add_entry_by_txt */
