@@ -39,7 +39,7 @@ jobs:
                   path: _dest
                   key: ${{ runner.os }}-openssl-${{ needs.msvc-openssl.outputs.openssl-head }}
             - run: cmake -DOPENSSL_ROOT_DIR="_dest\Program Files\OpenSSL" -DOPENSSL_ENGINES_DIR=bin .
-            - run: cmake --build .
+            - run: cmake --build . --verbose
             - name: Run tests
               run: |
                   $env:PATH = "$env:PATH;$pwd\_dest\Program Files\OpenSSL\bin"
